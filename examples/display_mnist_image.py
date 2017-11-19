@@ -1,11 +1,11 @@
 import sys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mnist import MNIST
+from mnist import MNISTLoader
 
 
 def load_data(data_path):
-    mndata = MNIST(data_path, return_type='numpy')
+    mndata = MNISTLoader(data_path, return_type='numpy')
     images, labels = mndata.load_training()
     return images, labels
 

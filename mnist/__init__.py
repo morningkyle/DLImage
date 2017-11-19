@@ -1,3 +1,3 @@
-from .loader import MNIST
+from .loader import MNISTLoader
 
-__all__ = [MNIST, ]
+__all__ = [MNISTLoader, ]

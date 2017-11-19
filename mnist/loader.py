@@ -37,18 +37,20 @@ def _import_numpy():
             import numpy as _np
         except ImportError as e:
             raise MNISTException(
-                "need to have numpy installed to return numpy arrays."\
-                +" Otherwise, please set return_type='lists' in constructor."
+                "need to have numpy installed to return numpy arrays."
+                + " Otherwise, please set return_type='lists' in constructor."
             )
         np = _np
     else:
         pass # was already previously imported
     return np
 
+
 class MNISTException(Exception):
     pass
 
-class MNIST(object):
+
+class MNISTLoader(object):
     def __init__(self, path='.', mode='vanilla', return_type='lists'):
         self.path = path
 
@@ -120,41 +122,41 @@ class MNIST(object):
         else:
             raise MNISTException("unknown return_type '{}'".format(self.return_type))
 
-    def process_images_to_numpy(self,images):
+    def process_images_to_numpy(self, images):
         _np = _import_numpy()
 
         images_np = _np.array(images)
 
         if self.mode == 'vanilla':
-            pass # no processing, return them vanilla
+            pass  # no processing, return them vanilla
 
         elif self.mode == 'randomly_binarized':
             r = _np.random.random(images_np.shape)
-            images_np = (r <= ( images_np / 255)).astype('int') # bool to 0/1
+            images_np = (r <= (images_np / 255)).astype('int')  # bool to 0/1
 
         elif self.mode == 'rounded_binarized':
-            images_np = ((images_np / 255) > 0.5).astype('int') # bool to 0/1
+            images_np = ((images_np / 255) > 0.5).astype('int')  # bool to 0/1
 
         else:
             raise MNISTException("unknown mode '{}'".format(self.mode))
 
         return images_np
 
-    def process_images_to_lists(self,images):
+    def process_images_to_lists(self, images):
         if self.mode == 'vanilla':
-            pass # no processing, return them vanilla
+            pass  # no processing, return them vanilla
 
         elif self.mode == 'randomly_binarized':
             for i in range(len(images)):
                 for j in range(len(images[i])):
                     pixel = images[i][j]
-                    images[i][j] = int(random.random() <= pixel/255) # bool to 0/1
+                    images[i][j] = int(random.random() <= pixel/255)  # bool to 0/1
 
         elif self.mode == 'rounded_binarized':
             for i in range(len(images)):
                 for j in range(len(images[i])):
                     pixel = images[i][j]
-                    images[i][j] = int(pixel/255 > 0.5) # bool to 0/1
+                    images[i][j] = int(pixel/255 > 0.5)  # bool to 0/1
         else:
             raise MNISTException("unknown mode '{}'".format(self.mode))
 
