@@ -1,4 +1,5 @@
 import sys
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mnist import MNIST
 
@@ -10,9 +11,8 @@ def load_data(data_path):
 
 
 def show_image(image, label):
-    plt.title(label)
-    plt.imshow(image.reshape(28, 28))
-    plt.gray()
+    plt.title(label, {'fontsize': 36})
+    plt.imshow(image.reshape(28, 28), cmap=mpl.cm.Greys)
     plt.show()
 
 
