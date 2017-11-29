@@ -45,13 +45,12 @@ class Network(object):
         tracking progress, but slows things down substantially."""
         training_data = list(training_data)
         test_data = list(test_data)
-        if test_data: n_test = len(test_data)
+        if test_data:
+            n_test = len(test_data)
         n = len(training_data)
         for j in range(epochs):
             random.shuffle(training_data)
-            mini_batches = [
-                training_data[k:k+mini_batch_size]
-                for k in range(0, n, mini_batch_size)]
+            mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
@@ -83,8 +82,8 @@ class Network(object):
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         # feed forward
         activation = x
-        activations = [x] # list to store all the activations, layer by layer
-        zs = [] # list to store all the z vectors, layer by layer
+        activations = [x]  # list to store all the activations, layer by layer
+        zs = []  # list to store all the z vectors, layer by layer
         for b, w in zip(self.biases, self.weights):
             z = np.dot(w, activation)+b
             zs.append(z)
