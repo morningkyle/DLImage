@@ -71,10 +71,9 @@ def load_labels(label_file):
     return label
 
 
-def print_result(results, label_file):
+def print_result(results, labels):
     results = np.squeeze(results)
     top_k = results.argsort()[-5:][::-1]
-    labels = load_labels(label_file)
     for i in top_k:
         print(labels[i], results[i])
     print('\n')
@@ -128,6 +127,7 @@ if __name__ == "__main__":
     output_operation = graph.get_operation_by_name("import/" + args.output_layer)
 
     images = get_image_list(args.image)
+    labels = load_labels(args.labels)
     with tf.Session(graph=graph) as sess:
         total = len(images)
         for i, image in enumerate(images):
@@ -139,5 +139,4 @@ if __name__ == "__main__":
             start = time.time()
             results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
             print('Evaluation time (1-image): {:.3f}s'.format(time.time() - start))
-            print_result(results, args.labels)
-
+            print_result(results, labels)
