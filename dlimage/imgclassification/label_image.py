@@ -17,9 +17,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import time
 import argparse
-import sys
 
 import numpy as np
 import tensorflow as tf
@@ -77,65 +77,67 @@ def print_result(results, label_file):
     labels = load_labels(label_file)
     for i in top_k:
         print(labels[i], results[i])
+    print('\n')
+
+
+def initialize_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image", help="image to be processed",
+                        default="data/tf_files/models/cropped_panda.jpg")
+    parser.add_argument("--graph", help="graph/model to be executed",
+                        default="data/tf_files/models/classify_image_graph_def.pb")
+    parser.add_argument("--labels", help="name of file containing labels",
+                        default="data/tf_files/models/imagenet_synset_to_human_label_map.txt")
+    parser.add_argument("--input_height", type=int, help="input height",
+                        default=299)
+    parser.add_argument("--input_width", type=int, help="input width",
+                        default=299)
+    parser.add_argument("--input_mean", type=int, help="input mean",
+                        default=0)
+    parser.add_argument("--input_std", type=int, help="input std",
+                        default=255)
+    parser.add_argument("--input_layer", help="name of input layer",
+                        default="Mul")
+    parser.add_argument("--output_layer", help="name of output layer",
+                        default="final_result")
+    args = parser.parse_args()
+
+    return args
+
+
+def get_image_list(image_path):
+    if os.path.isfile(image_path):
+        image_files = [image_path]
+    elif os.path.isdir(image_path):
+        image_files = []
+        files = os.listdir(image_path)
+        for f in files:
+            f = os.path.join(image_path, f)
+            if os.path.isfile(f):
+                image_files.append(f)
+    else:
+        image_files = []
+    return image_files
 
 
 if __name__ == "__main__":
-    file_name = "data/tf_files/models/cropped_panda.jpg"
-    model_file = "data/tf_files/models/classify_image_graph_def.pb"
-    label_file = "data/tf_files/models/imagenet_synset_to_human_label_map.txt"
-    input_height = 299
-    input_width = 299
-    input_mean = 0
-    input_std = 255
-    input_layer = "Mul"
-    output_layer = "final_result"
+    args = initialize_args()
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--image", help="image to be processed")
-    parser.add_argument("--graph", help="graph/model to be executed")
-    parser.add_argument("--labels", help="name of file containing labels")
-    parser.add_argument("--input_height", type=int, help="input height")
-    parser.add_argument("--input_width", type=int, help="input width")
-    parser.add_argument("--input_mean", type=int, help="input mean")
-    parser.add_argument("--input_std", type=int, help="input std")
-    parser.add_argument("--input_layer", help="name of input layer")
-    parser.add_argument("--output_layer", help="name of output layer")
-    args = parser.parse_args()
+    graph = load_graph(args.graph)
+    input_operation = graph.get_operation_by_name("import/" + args.input_layer)
+    output_operation = graph.get_operation_by_name("import/" + args.output_layer)
 
-    if args.graph:
-        model_file = args.graph
-    if args.image:
-        file_name = args.image
-    if args.labels:
-        label_file = args.labels
-    if args.input_height:
-        input_height = args.input_height
-    if args.input_width:
-        input_width = args.input_width
-    if args.input_mean:
-        input_mean = args.input_mean
-    if args.input_std:
-        input_std = args.input_std
-    if args.input_layer:
-        input_layer = args.input_layer
-    if args.output_layer:
-        output_layer = args.output_layer
-
-    graph = load_graph(model_file)
-    t = read_tensor_from_image_file(file_name,
-                                    input_height=input_height,
-                                    input_width=input_width,
-                                    input_mean=input_mean,
-                                    input_std=input_std)
-
-    input_name = "import/" + input_layer
-    output_name = "import/" + output_layer
-    input_operation = graph.get_operation_by_name(input_name)
-    output_operation = graph.get_operation_by_name(output_name)
-
+    images = get_image_list(args.image)
     with tf.Session(graph=graph) as sess:
-        start = time.time()
-        results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
-        end = time.time()
-        print('\nEvaluation time (1-image): {:.3f}s\n'.format(end - start))
-    print_result(results, label_file)
+        total = len(images)
+        for i, image in enumerate(images):
+            print("{0}, {1}/{2}".format(image, i, total))
+            start = time.time()
+            t = read_tensor_from_image_file(image)
+            print('Read image data (1-image): {:.3f}s'.format(time.time() - start))
+
+            start = time.time()
+            results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
+            print('Evaluation time (1-image): {:.3f}s'.format(time.time() - start))
+            print_result(results, args.labels)
+
