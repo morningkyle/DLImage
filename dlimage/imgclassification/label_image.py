@@ -18,6 +18,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import sys
 import time
 import argparse
 
@@ -80,13 +81,14 @@ def print_result(results, labels):
 
 
 def initialize_args():
+    this_dir = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser()
     parser.add_argument("--image", help="image to be processed",
-                        default="data/tf_files/models/cropped_panda.jpg")
+                        default=os.path.join(this_dir, "data/tf_files/models/cropped_panda.jpg"))
     parser.add_argument("--graph", help="graph/model to be executed",
-                        default="data/tf_files/models/classify_image_graph_def.pb")
+                        default=os.path.join(this_dir, "data/tf_files/retrained_graph.pb"))
     parser.add_argument("--labels", help="name of file containing labels",
-                        default="data/tf_files/models/imagenet_synset_to_human_label_map.txt")
+                        default=os.path.join(this_dir, "data/tf_files/retrained_labels.txt"))
     parser.add_argument("--input_height", type=int, help="input height",
                         default=299)
     parser.add_argument("--input_width", type=int, help="input width",
