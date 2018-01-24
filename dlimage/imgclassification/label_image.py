@@ -24,6 +24,7 @@ import argparse
 
 import numpy as np
 import tensorflow as tf
+from Recorder import Recorder
 
 
 def load_graph(model_file):
@@ -70,14 +71,6 @@ def load_labels(label_file):
     for l in proto_as_ascii_lines:
         label.append(l.rstrip())
     return label
-
-
-def print_result(results, labels):
-    results = np.squeeze(results)
-    top_k = results.argsort()[-5:][::-1]
-    for i in top_k:
-        print(labels[i], results[i])
-    print('\n')
 
 
 def initialize_args():
@@ -130,6 +123,7 @@ if __name__ == "__main__":
 
     images = get_image_list(args.image)
     labels = load_labels(args.labels)
+    recorder = Recorder(labels)
     with tf.Session(graph=graph) as sess:
         total = len(images)
         for i, image in enumerate(images):
@@ -141,4 +135,7 @@ if __name__ == "__main__":
             start = time.time()
             results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
             print('Evaluation time (1-image): {:.3f}s'.format(time.time() - start))
-            print_result(results, labels)
+            recorder.add_result(results)
+
+    print(recorder.df)
+
