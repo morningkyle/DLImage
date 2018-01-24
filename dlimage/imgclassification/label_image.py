@@ -135,7 +135,8 @@ if __name__ == "__main__":
             start = time.time()
             results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
             print('Evaluation time (1-image): {:.3f}s'.format(time.time() - start))
-            recorder.add_result(results)
+            recorder.add_result(results, image)
 
+    recorder.save('result.csv')
     print(recorder.df)
 
