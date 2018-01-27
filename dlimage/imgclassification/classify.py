@@ -79,7 +79,7 @@ def initialize_args():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser()
     parser.add_argument("--image", help="image to be processed",
-                        default=os.path.join(this_dir, "data/tf_files/models/cropped_panda.jpg"))
+                        default=os.path.join(this_dir, "data/tf_files/panda/cropped_panda.jpg"))
     parser.add_argument("--graph", help="graph/model to be executed",
                         default=os.path.join(this_dir, "data/tf_files/retrained_graph.pb"))
     parser.add_argument("--labels", help="name of file containing labels",
@@ -106,7 +106,7 @@ def get_image_label(image_path):
     if os.path.isdir(image_path):
         return os.path.basename(image_path)
     elif os.path.isfile(image_path):
-        return os.path.dirname(image_path)
+        return os.path.basename(os.path.dirname(image_path))
     else:
         return ''
 
@@ -144,7 +144,7 @@ def classify(args):
                   i+1, total))
             recorder.add_result(results, image)
 
-    recorder.save('result.csv')
+    recorder.save(get_image_label(args.image) + '.csv')
     return recorder.df
 
 
