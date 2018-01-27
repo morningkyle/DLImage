@@ -13,10 +13,11 @@ class Recorder(object):
         self.df.loc[len(self.df)] = result
         return self.df
 
-    def sort_result(self, result):
+    def sort_result(self, result, top_n):
         result = np.squeeze(result)
-        index = result.argsort()[-5:][::-1]
+        index = result.argsort()[-top_n:][::-1]
         return index
 
     def save(self, file_name=''):
-        self.df.to_csv(file_name)
+        if len(self.df) >= 1:
+            self.df.to_csv(file_name)

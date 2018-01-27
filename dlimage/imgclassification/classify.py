@@ -31,6 +31,7 @@ def load_graph(model_file):
     graph = tf.Graph()
     graph_def = tf.GraphDef()
 
+    print(model_file)
     with open(model_file, "rb") as f:
         graph_def.ParseFromString(f.read())
     with graph.as_default():
@@ -63,7 +64,7 @@ def read_tensor_from_image_file(file_name, input_height=299, input_width=299,
     normalized = tf.divide(tf.subtract(resized, [input_mean]), [input_std])
     sess = tf.Session()
     result = sess.run(normalized)
-    print('Read image data: {:.3f}s'.format(time.time() - start))
+    print('Read image data: {0:.3f}s, file: {1}'.format(time.time() - start, file_name))
     return result
 
 
@@ -78,7 +79,7 @@ def load_labels(label_file):
 def initialize_args():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image", help="image to be processed",
+    parser.add_argument("--image", help="image or image directory to be processed",
                         default=os.path.join(this_dir, "data/tf_files/panda/cropped_panda.jpg"))
     parser.add_argument("--graph", help="graph/model to be executed",
                         default=os.path.join(this_dir, "data/tf_files/retrained_graph.pb"))
@@ -111,14 +112,15 @@ def get_image_label(image_path):
         return ''
 
 
-def get_image_list(image_path):
-    if os.path.isfile(image_path):
-        image_files = [image_path]
-    elif os.path.isdir(image_path):
+def get_image_files(path):
+    """Return immediate files under @path"""
+    if os.path.isfile(path):
+        image_files = [path]
+    elif os.path.isdir(path):
         image_files = []
-        files = os.listdir(image_path)
+        files = os.listdir(path)
         for f in files:
-            f = os.path.join(image_path, f)
+            f = os.path.join(path, f)
             if os.path.isfile(f):
                 image_files.append(f)
     else:
@@ -126,12 +128,11 @@ def get_image_list(image_path):
     return image_files
 
 
-def classify(args):
-    graph = load_graph(args.graph)
+def classify(graph, args):
     input_operation = graph.get_operation_by_name("import/" + args.input_layer)
     output_operation = graph.get_operation_by_name("import/" + args.output_layer)
 
-    images = get_image_list(args.image)
+    images = get_image_files(args.image)
     labels = load_labels(args.labels)
     recorder = Recorder(labels)
     with tf.Session(graph=graph) as sess:
@@ -140,7 +141,7 @@ def classify(args):
             t = read_tensor_from_image_file(image)
             start = time.time()
             results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
-            print('Evaluation time (1-image): {0:.3f}s, {1}/{2}'.format(time.time() - start,
+            print('Evaluation time: {0:.3f}s, {1}/{2}'.format(time.time() - start,
                   i+1, total))
             recorder.add_result(results, image)
 
@@ -150,5 +151,6 @@ def classify(args):
 
 if __name__ == "__main__":
     args = initialize_args()
-    df = classify(args)
+    graph = load_graph(args.graph)
+    df = classify(graph, args)
 
