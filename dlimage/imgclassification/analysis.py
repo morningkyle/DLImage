@@ -83,6 +83,6 @@ def summarize(path):
 
 
 if __name__ == "__main__":
-    df = summarize('.')
+    df = summarize('data/')
     print(df)
 

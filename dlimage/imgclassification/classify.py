@@ -145,7 +145,8 @@ def classify(graph, args):
                   i+1, total))
             recorder.add_result(results, image)
 
-    recorder.save(get_image_label(args.image) + '.csv')
+    dst = os.path.join('data/', get_image_label(args.image) + '.csv')
+    recorder.save(dst)
     return recorder.df
 
 
