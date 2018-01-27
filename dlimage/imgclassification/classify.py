@@ -27,6 +27,7 @@ from Recorder import Recorder
 
 
 def load_graph(model_file):
+    start = time.time()
     graph = tf.Graph()
     graph_def = tf.GraphDef()
 
@@ -35,11 +36,13 @@ def load_graph(model_file):
     with graph.as_default():
         tf.import_graph_def(graph_def)
 
+    print('Load graph: {:.3f}s'.format(time.time() - start))
     return graph
 
 
 def read_tensor_from_image_file(file_name, input_height=299, input_width=299,
                                 input_mean=0, input_std=255):
+    start = time.time()
     input_name = "file_reader"
     output_name = "normalized"
     file_reader = tf.read_file(file_name, input_name)
@@ -60,7 +63,7 @@ def read_tensor_from_image_file(file_name, input_height=299, input_width=299,
     normalized = tf.divide(tf.subtract(resized, [input_mean]), [input_std])
     sess = tf.Session()
     result = sess.run(normalized)
-
+    print('Read image data: {:.3f}s'.format(time.time() - start))
     return result
 
 
@@ -134,14 +137,11 @@ def classify(args):
     with tf.Session(graph=graph) as sess:
         total = len(images)
         for i, image in enumerate(images):
-            print("{0}, {1}/{2}".format(image, i, total))
-            start = time.time()
             t = read_tensor_from_image_file(image)
-            print('Read image data (1-image): {:.3f}s'.format(time.time() - start))
-
             start = time.time()
             results = sess.run(output_operation.outputs[0], {input_operation.outputs[0]: t})
-            print('Evaluation time (1-image): {:.3f}s'.format(time.time() - start))
+            print('Evaluation time (1-image): {0:.3f}s, {1}/{2}'.format(time.time() - start,
+                  i+1, total))
             recorder.add_result(results, image)
 
     recorder.save('result.csv')
