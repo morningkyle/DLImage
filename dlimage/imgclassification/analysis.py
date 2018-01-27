@@ -19,15 +19,18 @@ def _guess_top_category(df: pd.DataFrame):
 
 def summarize(df: pd.DataFrame, save_false_result=False):
     df_new = df.drop(labels='file', axis=1, errors='ignore')
-    name, col_idx = _guess_top_category(df_new)
+    label, col_idx = _guess_top_category(df_new)
     total = len(df_new)
-    avg = df_new[name].sum() / total
-    maximal = df_new[name].max()
-    minimal = df_new[name].min()
-    print("Top-1 confidence, avg: {0}, max: {1}, min:{2}".format(avg, maximal, minimal))
+
     row_correct = np.argmax(df_new.values, axis=1) == col_idx
     num_correct = sum(row_correct)
-    print("Pass rate: {0}%. {1}/{2}".format(num_correct / total, num_correct, total))
+    print("Pass rate: {0:.3f}%. {1}/{2}".format(num_correct * 100.0 / total, num_correct, total))
+
+    avg = df_new[label].sum() / total * 100
+    maximal = df_new[label].max() * 100
+    minimal = df_new[label].min() * 100
+    print("Top-1 confidence: (avg: {0:.3f}%, max: {1:.3f}%, min:{2:.3f}%)".format(avg, maximal, minimal))
+
     if save_false_result is True:
         incorrect = df.loc[row_correct == False]
         incorrect.to_csv('false_result.csv')

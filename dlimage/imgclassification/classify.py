@@ -93,9 +93,19 @@ def initialize_args():
                         default="Mul")
     parser.add_argument("--output_layer", help="name of output layer",
                         default="final_result")
-    args = parser.parse_args()
 
+    args = parser.parse_args()
     return args
+
+
+def get_image_label(image_path):
+    image_path = os.path.normpath(image_path)
+    if os.path.isdir(image_path):
+        return os.path.basename(image_path)
+    elif os.path.isfile(image_path):
+        return os.path.dirname(image_path)
+    else:
+        return ''
 
 
 def get_image_list(image_path):
@@ -113,9 +123,7 @@ def get_image_list(image_path):
     return image_files
 
 
-if __name__ == "__main__":
-    args = initialize_args()
-
+def classify(args):
     graph = load_graph(args.graph)
     input_operation = graph.get_operation_by_name("import/" + args.input_layer)
     output_operation = graph.get_operation_by_name("import/" + args.output_layer)
@@ -137,4 +145,10 @@ if __name__ == "__main__":
             recorder.add_result(results, image)
 
     recorder.save('result.csv')
-    print(recorder.df)
+    return recorder.df
+
+
+if __name__ == "__main__":
+    args = initialize_args()
+    df = classify(args)
+
