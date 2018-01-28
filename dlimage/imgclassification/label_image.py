@@ -21,7 +21,7 @@ import time
 import argparse
 import tensorflow as tf
 
-from Recorder import Recorder
+from recorder import Recorder
 
 
 def load_graph(model_file):
