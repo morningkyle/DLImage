@@ -17,12 +17,10 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import sys
 import time
 import argparse
-
-import numpy as np
 import tensorflow as tf
+
 from Recorder import Recorder
 
 
@@ -112,6 +110,14 @@ def get_image_label(image_path):
         return ''
 
 
+def is_image_file(path):
+    if not os.path.isfile(path):
+        return False
+    if path.endswith('.jpg') or path.endswith('.bmp') or path.endswith('.png'):
+        return True
+    return False
+
+
 def get_image_files(path):
     """Return immediate files under @path"""
     if os.path.isfile(path):
@@ -120,9 +126,9 @@ def get_image_files(path):
         image_files = []
         files = os.listdir(path)
         for f in files:
-            f = os.path.join(path, f)
-            if os.path.isfile(f):
-                image_files.append(f)
+            p = os.path.join(path, f)
+            if is_image_file(p):
+                image_files.append(p)
     else:
         image_files = []
     return image_files

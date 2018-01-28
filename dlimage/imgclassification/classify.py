@@ -1,12 +1,12 @@
 import os
 
-from label_image import classify, load_graph, initialize_args
+from label_image import classify, load_graph, initialize_args, is_image_file
 
 
 def get_sub_dirs(path):
     if os.path.isdir(path):
         return [d[0] for d in os.walk(path)]
-    elif os.path.isfile(path):
+    elif is_image_file(path):
         return [path]
     else:
         return []
