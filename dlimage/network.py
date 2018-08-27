@@ -21,9 +21,19 @@ class Network(object):
         computing the outputs from later layers."""
         self.num_layers = len(sizes)
         self.sizes = sizes
-        self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
-        self.weights = [np.random.randn(y, x)
+
+        # Uniform distribution in range [-sqrt(6. / (in + out)), +sqrt(6. / (in + out))]
+        self.biases = [np.random.rand(y, 1) for y in sizes[1:]]
+        self.weights = [np.random.rand(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
+        init_ranges = [(6.0 / (x + y)) ** 0.5 for x, y in zip(sizes[:-1], sizes[1:])]
+        for i in range(len(init_ranges)):
+            self.biases[i] = (self.biases[i] * 2 - 1) * init_ranges[i]
+            self.weights[i] = (self.weights[i] * 2 - 1) * init_ranges[i]
+        # Normalized distribution
+        # self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
+        # self.weights = [np.random.randn(y, x)
+        #                for x, y in zip(sizes[:-1], sizes[1:])]
 
     def feedforward(self, a):
         """Return the output vector of the network for input vector a."""

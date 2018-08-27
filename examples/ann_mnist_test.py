@@ -24,5 +24,5 @@ test_data = zip(test_x, labels)
 
 
 net = Network([784, 80, 10])
-net.SGD(training_data, 300, 200, 0.999, test_data=test_data)
+net.SGD(training_data, 100, 20, 0.08, test_data=test_data)
 

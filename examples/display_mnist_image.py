@@ -1,4 +1,5 @@
 import sys
+import os
 import random
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -8,7 +9,7 @@ from dlimage.mnist import MNISTLoader
 
 def load_data(data_path):
     mndata = MNISTLoader(data_path)
-    images, labels = mndata.load_training()
+    images, labels = mndata.load_testing()
     return images, labels
 
 
@@ -29,7 +30,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         idx = int(sys.argv[1])
     else:
-        idx = random.randint(0, 60000)
+        idx = random.randint(0, 10000)
+
     images, labels = load_data('../dlimage/mnist/data')
     print_data_info(images, labels)
     show_image(images[idx], labels[idx])
