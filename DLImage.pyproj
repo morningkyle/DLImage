@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{e276c553-ec6f-47f3-b648-145e2aeee92c}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>examples\keras\ann_mnist_test.py</StartupFile>
+    <SearchPath>..\DLImage</SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|PythonCore|3.6</InterpreterId>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="dlimage\imgclassification\analysis.py" />
+    <Compile Include="dlimage\imgclassification\classify.py" />
+    <Compile Include="dlimage\imgclassification\label_image.py" />
+    <Compile Include="dlimage\imgclassification\Recorder.py" />
+    <Compile Include="dlimage\imgclassification\retrain.py" />
+    <Compile Include="dlimage\imgclassification\retrain_test.py" />
+    <Compile Include="dlimage\imgclassification\__init__.py" />
+    <Compile Include="dlimage\mnist\loader.py" />
+    <Compile Include="dlimage\mnist\__init__.py" />
+    <Compile Include="dlimage\network.py" />
+    <Compile Include="dlimage\__init__.py" />
+    <Compile Include="examples\ann_mnist_test.py" />
+    <Compile Include="examples\display_mnist_image.py" />
+    <Compile Include="examples\keras\ann_mnist_test.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="examples\tfbasics\step1.py" />
+    <Compile Include="examples\tfbasics\step2.py" />
+    <Compile Include="examples\tfbasics\step3_1.py" />
+    <Compile Include="examples\tfbasics\step3_2.py" />
+    <Compile Include="examples\tfbasics\step4.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dlimage\imgclassification\data\readme.txt" />
+    <Content Include="dlimage\imgclassification\data\tf_files\models\cropped_panda.jpg" />
+    <Content Include="dlimage\imgclassification\data\tf_files\panda\cropped_panda.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="dlimage" />
+    <Folder Include="dlimage\imgclassification" />
+    <Folder Include="dlimage\imgclassification\data" />
+    <Folder Include="dlimage\imgclassification\data\tf_files\" />
+    <Folder Include="dlimage\imgclassification\data\tf_files\models" />
+    <Folder Include="dlimage\imgclassification\data\tf_files\panda" />
+    <Folder Include="dlimage\mnist" />
+    <Folder Include="examples" />
+    <Folder Include="examples\keras\" />
+    <Folder Include="examples\tfbasics" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.6" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
