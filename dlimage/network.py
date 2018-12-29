@@ -8,7 +8,7 @@ and omits many desirable features.
 
 import random
 import numpy as np
-
+from datetime import datetime
 
 class Network(object):
     def __init__(self, sizes):
@@ -48,8 +48,8 @@ class Network(object):
          the test data after each epoch, and partial progress printed out.  This is useful for tracking progress,
          but slows things down substantially."""
         training_data = list(training_data)
-        test_data = list(test_data)
         if test_data:
+            test_data = list(test_data)
             n_test = len(test_data)
         n = len(training_data)
         for j in range(epochs):
@@ -58,8 +58,10 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
+                print(str(datetime.now()), end='')
                 print("Epoch {0}: {1} / {2}".format(j, self.evaluate(test_data), n_test))
             else:
+                print(str(datetime.now()), end='')
                 print("Epoch {0} complete".format(j))
 
     def update_mini_batch(self, mini_batch, eta):
@@ -117,8 +119,11 @@ class Network(object):
         """Return the number of test inputs for which the neural network outputs the correct result. Note
         that the neural network's output is assumed to be the index of whichever neuron in the final layer
         has the highest activation."""
+        print(str(datetime.now()))
         test_results = [(np.argmax(self.feedforward(x)), y) for (x, y) in test_data]
-        return sum(int(x == y) for (x, y) in test_results)
+        correct = sum(int(x == y) for (x, y) in test_results)
+        print(str(datetime.now()))
+        return correct;
 
 
 def sigmoid(z):

@@ -12,7 +12,7 @@ def vectorize(j):
     return e
 
 
-mndata = MNISTLoader('../dlimage//mnist/data')
+mndata = MNISTLoader('dlimage/mnist/data')
 images, labels = mndata.load_training()
 training_x = [i.reshape(784, 1) for i in images.copy()]
 training_y = [vectorize(i) for i in labels.copy()]
@@ -24,5 +24,5 @@ test_data = zip(test_x, labels)
 
 
 net = Network([784, 80, 10])
-net.SGD(training_data, 100, 20, 0.08, test_data=test_data)
-
+net.SGD(training_data, 100, 3, 0.08)
+net.evaluate(test_data)

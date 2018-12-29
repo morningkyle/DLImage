@@ -32,7 +32,7 @@ if __name__ == '__main__':
     else:
         idx = random.randint(0, 10000)
 
-    images, labels = load_data('../dlimage/mnist/data')
+    images, labels = load_data('dlimage/mnist/data')
     print_data_info(images, labels)
     show_image(images[idx], labels[idx])
 
